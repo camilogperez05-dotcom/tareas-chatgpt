@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Tarea</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Registrar Tarea</h1>
+        <form id="taskForm">
+            <label for="tarea">Tarea</label>
+            <input type="text" id="tarea" name="tarea" required>
+            
+            <label for="proyecto">Proyecto</label>
+            <input type="text" id="proyecto" name="proyecto" required>
+            
+            <label for="fecha_vencimiento">Fecha de vencimiento</label>
+            <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" required>
+            
+            <label for="prioridad">Prioridad</label>
+            <select id="prioridad" name="prioridad">
+                <option value="1">1 - Baja</option>
+                <option value="2">2 - Media</option>
+                <option value="3">3 - Alta</option>
+            </select>
+            
+            <button type="submit">Enviar tarea</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('taskForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const data = {
+                tarea: document.getElementById('tarea').value,
+                proyecto: document.getElementById('proyecto').value,
+                fecha_vencimiento: document.getElementById('fecha_vencimiento').value,
+                prioridad: document.getElementById('prioridad').value,
+                origen: "ChatGPT"
+            };
+
+            try {
+                const response = await fetch('https://camiloperez.app.n8n.cloud/webhook-test/agente-tareas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Tarea registrada exitosamente');
+                    document.getElementById('taskForm').reset();
+                } else {
+                    alert('Error al registrar la tarea');
+                }
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+                alert('Fallo de red o del servidor');
+            }
+        });
+    </script>
+</body>
+</html>
