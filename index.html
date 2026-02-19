@@ -126,7 +126,7 @@ document.getElementById('taskForm').addEventListener('submit', async function(ev
         fecha_vencimiento: document.getElementById('fecha_vencimiento').value,
         prioridad: document.getElementById('prioridad').value,
         responsable: document.getElementById('responsable').value,
-        origen: "Formulario"
+        origen.trim(),
     };
 
     try {
