@@ -1,59 +1,144 @@
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const form = document.getElementById("form-tarea");
-
-  if (!form) {
-    console.error("No se encontró el formulario con id 'form-tarea'");
-    return;
-  }
-
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const tarea = document.getElementById("tarea")?.value.trim();
-    const proyecto = document.getElementById("proyecto")?.value.trim();
-    const fecha_vencimiento = document.getElementById("fecha_vencimiento")?.value;
-    const prioridad = document.getElementById("prioridad")?.value;
-    const responsable = document.getElementById("responsable")?.value.trim();
-
-    if (!tarea || !prioridad) {
-      alert("Tarea y prioridad son obligatorias");
-      return;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Tareas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
     }
 
-    try {
-      const response = await fetch("https://camiloperez.app.n8n.cloud/webhook/agente-tareas", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          tarea,
-          proyecto,
-          fecha_vencimiento,
-          prioridad,
-          origen: "Formulario",
-          responsable
-        })
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Registrar Tarea</h2>
+
+    <!-- 🔥 ESTE ID ES CLAVE -->
+    <form id="form-tarea">
+
+      <label for="tarea">Tarea</label>
+      <input type="text" id="tarea" required>
+
+      <label for="proyecto">Proyecto</label>
+      <input type="text" id="proyecto">
+
+      <label for="fecha_vencimiento">Fecha de vencimiento</label>
+      <input type="date" id="fecha_vencimiento">
+
+      <label for="prioridad">Prioridad</label>
+      <select id="prioridad" required>
+        <option value="">Seleccionar</option>
+        <option value="1">Alta</option>
+        <option value="2">Media</option>
+        <option value="3">Baja</option>
+      </select>
+
+      <label for="responsable">Responsable</label>
+      <input type="text" id="responsable" value="Camilo">
+
+      <button type="submit">Enviar Tarea</button>
+
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const form = document.getElementById("form-tarea");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const tarea = document.getElementById("tarea").value.trim();
+        const proyecto = document.getElementById("proyecto").value.trim();
+        const fecha_vencimiento = document.getElementById("fecha_vencimiento").value;
+        const prioridad = document.getElementById("prioridad").value;
+        const responsable = document.getElementById("responsable").value.trim();
+
+        if (!tarea || !prioridad) {
+          alert("Tarea y prioridad son obligatorias");
+          return;
+        }
+
+        try {
+          const response = await fetch("https://camiloperez.app.n8n.cloud/webhook/agente-tareas", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              tarea,
+              proyecto,
+              fecha_vencimiento,
+              prioridad,
+              origen: "Formulario",
+              responsable
+            })
+          });
+
+          const data = await response.json();
+          console.log("Respuesta:", data);
+
+          if (response.ok) {
+            alert("Tarea enviada correctamente");
+            form.reset();
+          } else {
+            alert("Error al enviar");
+          }
+
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Error de conexión");
+        }
+
       });
 
-      const data = await response.json();
-      console.log(data);
+    });
+  </script>
 
-      if (response.ok) {
-        alert("Tarea enviada correctamente");
-        form.reset();
-      } else {
-        alert("Error al enviar");
-      }
-
-    } catch (error) {
-      console.error(error);
-      alert("Error de conexión");
-    }
-
-  });
-
-});
-</script>
+</body>
+</html>
